@@ -1,0 +1,106 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Utilisateur{
+  id Int @id @default(autoincrement())
+  username String?
+  password String @db.Text
+  role String?
+
+  articles Article[]
+}
+
+model Article {
+  id Int @id @default(autoincrement())
+  name String?
+  purchasePrice String?
+  sellingPrice String?
+  category String?
+  location String?
+  receptionDate DateTime?
+  quantity Int
+  description String @db.Text
+
+  userRelation Utilisateur @relation(fields: [user], references: [id])
+  user Int
+
+  supplierRelation Fournisseur @relation(fields: [supplier], references: [id])
+  supplier Int
+
+}
+
+model Categorie {
+  id Int @id @default(autoincrement())
+  wording String?
+}
+
+model Vente {
+  id Int @id @default(autoincrement())
+  // sellDate
+  // article
+  // quantity
+
+}
+
+model Achat {
+  id Int @id @default(autoincrement())
+  // purchaseDate
+  
+}
+
+model CommandeFournisseur {
+  id Int @id @default(autoincrement())
+  orderDate DateTime
+  article Json
+  
+  
+  // supplier 
+}
+
+model CommandeClient {
+  id Int @id @default(autoincrement())
+}
+
+model Client {
+  id Int @id @default(autoincrement())
+  name String
+  phone String
+  email String
+}
+
+model Fournisseur {
+  id Int @id @default(autoincrement())
+  socialReason String?
+  phone String @db.VarChar(8)
+  email String?
+
+  articleRelation Article[]
+}
+
+model Stock {
+  id Int @id @default(autoincrement())
+  // quantityAlert
+}
+
+model Emplacement {
+  id Int @id @default(autoincrement())
+  wording String?
+  creationDate DateTime?
+}
+
+model LigneCommandeClient {
+  id Int @id @default(autoincrement())
+}
+
+model LigneCommandeFournisseurs {
+  id Int @id @default(autoincrement())
+}
