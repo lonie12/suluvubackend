@@ -12,23 +12,42 @@ datasource db {
 
 model Utilisateur{
   id Int @id @default(autoincrement())
-  username String?
+  username String
   password String @db.Text
-  role String?
+  roles String @db.Text
+  phone String? @db.VarChar(8)
 
   articles Article[]
 }
 
+model Emplacement {
+  id Int @id @default(autoincrement())
+  wording String?
+  creationDate DateTime?
+
+  product Article[]
+}
+
+model Categorie {
+  id Int @id @default(autoincrement())
+  wording String?
+
+  product Article[]
+}
+
 model Article {
   id Int @id @default(autoincrement())
-  name String?
-  purchasePrice String?
-  sellingPrice String?
-  category String?
-  location String?
-  receptionDate DateTime?
+  name String
+  purchasePrice String
+  sellingPrice String
+  receptionDate DateTime
   quantity Int
-  description String @db.Text
+  description String? @db.Text
+  image String? @db.Text
+
+  ligne LigneVente[]
+
+  cmde LigneCommandeVente[]
 
   userRelation Utilisateur @relation(fields: [user], references: [id])
   user Int
@@ -36,71 +55,145 @@ model Article {
   supplierRelation Fournisseur @relation(fields: [supplier], references: [id])
   supplier Int
 
-}
+  categorieRelation Categorie @relation(fields: [category], references: [id])
+  category Int
 
-model Categorie {
-  id Int @id @default(autoincrement())
-  wording String?
-}
+  locationRelation Emplacement @relation(fields: [location], references: [id])
+  location Int
 
-model Vente {
-  id Int @id @default(autoincrement())
-  // sellDate
-  // article
-  // quantity
-
-}
-
-model Achat {
-  id Int @id @default(autoincrement())
-  // purchaseDate
-  
-}
-
-model CommandeFournisseur {
-  id Int @id @default(autoincrement())
-  orderDate DateTime
-  article Json
-  
-  
-  // supplier 
-}
-
-model CommandeClient {
-  id Int @id @default(autoincrement())
 }
 
 model Client {
   id Int @id @default(autoincrement())
   name String
-  phone String
+  phone String @db.VarChar(8)
   email String
+  adresse String?
+  description String?
+
+  commandes CommandeVente[]
 }
 
 model Fournisseur {
   id Int @id @default(autoincrement())
-  socialReason String?
+  socialReason String
   phone String @db.VarChar(8)
-  email String?
+  email String
+  adresse String?
+  description String?
 
   articleRelation Article[]
 }
 
-model Stock {
+
+// Vente
+model Vente {
   id Int @id @default(autoincrement())
-  // quantityAlert
+  sellDate DateTime
+
+  ligne LigneVente[]
+
 }
 
-model Emplacement {
-  id Int @id @default(autoincrement())
-  wording String?
-  creationDate DateTime?
+model CommandeVente {
+  id Int @default(autoincrement()) @id
+  dateCommande DateTime
+  status String
+
+  rClient Client @relation(fields: [client], references: [id])
+  client Int
+  
 }
 
-model LigneCommandeClient {
-  id Int @id @default(autoincrement())
+model LigneCommandeVente {
+  id Int @default(autoincrement()) @id
+  qte Int
+  sousTotal String
+
+  rArticle Article @relation(fields: [article], references: [id])
+  article Int
+
 }
 
-model LigneCommandeFournisseurs {
-  id Int @id @default(autoincrement())
+model LigneVente {
+  id Int @default(autoincrement()) @id
+  qte Int
+  sousTotal String
+
+  rArticle Article @relation(fields: [article], references: [id])
+  article Int
+
+  rVente Vente @relation(fields: [vente], references: [id])
+  vente Int
 }
+
+// Achat
+
+// model Achat {
+//   id Int @id @default(autoincrement())
+//   purchaseDate DateTime
+
+//   ligne LigneVente[]
+
+// }
+
+// model CommandeAchat {
+//   id Int @default(autoincrement()) @id
+//   dateCommande DateTime
+//   status String
+
+
+//   rFournisseur Fournisseur @relation(fields: [fournisseur], references: [id])
+//   fournisseur Int
+
+//   rClient Client @relation(fields: [client], references: [id])
+//   client Int
+
+//   ligne LigneAchat[]
+// }
+
+// model LigneAchat {
+//   id Int @default(autoincrement()) @id
+//   qte Int
+
+//   rArticle Article @relation(fields: [article], references: [id])
+//   article Int
+
+//   rVente Vente @relation(fields: [vente], references: [id])
+//   vente Int
+
+//   rCdeVente CommandeVente @relation(fields: [cmdevente], references: [id])
+//   cmdevente Int
+// }
+
+// model Achat {
+//   id Int @id @default(autoincrement())
+//   // purchaseDate
+  
+// }
+
+// // model CommandeFournisseur {
+// //   id Int @id @default(autoincrement())
+// //   orderDate DateTime
+// //   article Json
+  
+  
+// //   // supplier 
+// // }
+
+// // model CommandeClient {
+// //   id Int @id @default(autoincrement())
+// // }
+
+// // model Stock {
+// //   id Int @id @default(autoincrement())
+// //   // quantityAlert
+// // }
+
+// // model LigneCommandeClient {
+// //   id Int @id @default(autoincrement())
+// // }
+
+// // model LigneCommandeFournisseurs {
+// //   id Int @id @default(autoincrement())
+// // }
